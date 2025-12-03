@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wash Connect System Requirement Specification</title>
+    
+    <!-- MERMAID JS (Auto-draws ERD and Gantt) -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+
+    <style>
+        /* --- BLACK & WHITE PRINT STYLING --- */
+        body {
+            font-family: 'Times New Roman', Times, serif; 
+            line-height: 1.6;
+            color: #000;
+            max-width: 850px; /* Standard Paper Width */
+            margin: 0 auto;
+            padding: 50px;
+            background-color: #fff;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+        }
+        
+        /* HEADINGS */
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 20pt;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+        }
+        h2 {
+            font-size: 16pt;
+            text-transform: uppercase;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #000;
+        }
+        h3 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-left: 0px; /* Aligned left per standard doc */
+        }
+        h4 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-left: 20px;
+        }
+        h5 {
+            font-size: 12pt;
+            font-weight: bold;
+            font-style: italic;
+            margin-top: 10px;
+            margin-left: 40px;
+        }
+        
+        /* TEXT & LISTS */
+        p {
+            font-size: 12pt;
+            text-align: justify;
+            margin-bottom: 10px;
+            text-indent: 30px;
+        }
+        ol, ul {
+            margin-left: 40px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        
+        /* IMAGE BOXES */
+        .figure-box {
+            border: 1px solid #000;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 30px 0;
+            background: #fff;
+        }
+        .figure-box p {
+            text-align: center;
+            font-style: italic;
+            text-indent: 0;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .caption {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 10pt;
+        }
+
+        /* TABLE OF CONTENTS */
+        .toc {
+            border: 1px solid #000;
+            padding: 20px;
+            margin-bottom: 50px;
+            page-break-after: always;
+        }
+        .toc h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .toc li {
+            margin-bottom: 8px;
+            border-bottom: 1px dotted #ccc;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+        }
+
+        /* TITLE PAGE */
+        .title-page {
+            text-align: center;
+            margin-top: 100px;
+            margin-bottom: 100px;
+            page-break-after: always;
+        }
+        .title-page p {
+            text-align: center;
+            text-indent: 0;
+            margin: 5px 0;
+        }
+        .title-label {
+            margin-top: 40px;
+            font-weight: bold;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- TITLE PAGE (Template Page 2) -->
+    <div class="title-page">
+        <h1>WASH CONNECT SYSTEM REQUIREMENT SPECIFICATION</h1>
+        
+        <p>A Course Requirement of</p>
+        <p><strong>Software Engineering 1 (CSC 106)</strong></p>
+        
+        <span class="title-label">Submitted to</span>
+        <p><strong>PROF. CAPTAIN</strong></p>
+        
+        <span class="title-label">Submitted by:</span>
+        <p><strong>JOHN M. ELERIE</strong></p>
+        <p><strong>JAKE</strong></p>
+        
+        <span class="title-label">Date of Submission</span>
+        <p>November 2025</p>
+    </div>
+
+    <!-- TABLE OF CONTENTS (Page 3) -->
+    <div class="toc">
+        <h3>TABLE OF CONTENTS</h3>
+        <ul>
+            <li><a href="#intro">I. INTRODUCTION</a></li>
+            <li><a href="#background">II. PROJECT BACKGROUND</a></li>
+            <li><a href="#stakeholder">III. STAKEHOLDER AND USER ANALYSIS</a></li>
+            <li><a href="#devplan">IV. PROJECT DEVELOPMENT PLAN</a></li>
+            <li><a href="#conclusion">V. CONCLUSION</a></li>
+        </ul>
+    </div>
+
+    <!-- I. INTRODUCTION (Page 4) -->
+    <h2 id="intro">I. INTRODUCTION</h2>
+
+    <h3>OVERVIEW OF THE PROJECT</h3>
+    <p>The <strong>Wash Connect Laundry Management System</strong> is a desktop-based software application designed to automate and modernize the daily operations of a local laundry business. It serves as a digital replacement for traditional manual logbooks, aiming to streamline transaction recording, price calculation, and customer record management. By integrating a user-friendly interface with a secure cloud-based database (Supabase), the system ensures accurate data handling and provides business owners with real-time insights into their operations.</p>
+
+    <h3>a. PROBLEM STATEMENT</h3>
+    <p>The project addresses the following issues in the current manual system:</p>
+    <ol type="1">
+        <li><strong>Calculation Errors:</strong> Frequent mistakes in manually computing prices for excess weight and add-ons.</li>
+        <li><strong>Inefficient Data Retrieval:</strong> Time-consuming search for customer history in physical logbooks.</li>
+        <li><strong>Lack of Sales Monitoring:</strong> Difficulty in generating immediate daily or monthly income reports.</li>
+        <li><strong>Data Security Risks:</strong> Physical records are vulnerable to loss or damage.</li>
+    </ol>
+
+    <h3>b. OBJECTIVES OF THE STUDY</h3>
+    <p>The goal is to develop the Wash Connect System with the following capabilities:</p>
+    <ol type="a">
+        <li>To develop a <strong>Secure Login System</strong> for admins.</li>
+        <li>To implement an <strong>Automated Pricing Module</strong> (calculates based on 6kg min, excess weight, add-ons).</li>
+        <li>To create a <strong>Customer Management Module</strong> for storing and searching client details.</li>
+        <li>To provide a <strong>Real-time Sales Dashboard</strong>.</li>
+        <li>To utilize a <strong>Cloud Database</strong> for data backup.</li>
+    </ol>
+
+    <h3>c. SCOPE AND LIMITATIONS</h3>
+    <p><strong>Scope:</strong> The system covers User Authentication, Order Management, Status Tracking, Sales Reporting, and Customer Database.</p>
+    <p><strong>Limitations:</strong> The system requires an internet connection for cloud syncing and is designed for desktop use only (no mobile app).</p>
+
+    <!-- II. PROJECT BACKGROUND (Page 5) -->
+    <h2 id="background">II. PROJECT BACKGROUND</h2>
+
+    <h3>a. DESCRIPTION OF THE PROJECT DOMAIN</h3>
+    <p>The project targets the laundry service industry, specifically Small-to-Medium Enterprises (SMEs). These businesses often rely on manual labor for record-keeping. This system introduces automation to improve efficiency, accuracy, and data security in this service sector.</p>
+
+    <h3>b. CURRENT SYSTEM OR PROCESS</h3>
+    <p>The existing manual process involves:</p>
+    <ol type="1">
+        <li><strong>Recording:</strong> Writing orders in a logbook.</li>
+        <li><strong>Calculation:</strong> Using a calculator for totals.</li>
+        <li><strong>Tracking:</strong> Flipping through pages to check status.</li>
+    </ol>
+    <p><strong>Limitations:</strong> Slow, error-prone, and lacks data security.</p>
+
+    <h3>c. JUSTIFICATION OF THE PROPOSED SYSTEM</h3>
+    <p>The new system improves upon the current process by automating calculations (eliminating errors), enabling instant search (saving time), and backing up data to the cloud (preventing loss).</p>
+
+    <!-- III. STAKEHOLDER AND USER ANALYSIS (Page 6) -->
+    <h2 id="stakeholder">III. STAKEHOLDER AND USER ANALYSIS</h2>
+
+    <h3>A. USER PERSONA</h3>
+    <p><strong>Role:</strong> Laundry Staff / Admin.</p>
+    <p><strong>Goal:</strong> Process orders quickly without math errors.</p>
+    <p><strong>Pain Points:</strong> Tired of manual calculations and losing logbooks.</p>
+
+    <h3>B. STAKEHOLDER IDENTIFICATION</h3>
+    <ol type="1">
+        <li><strong>Business Owner:</strong> Needs accurate financial reports.
+            <div class="figure-box"><p>[ PASTE OWNER PICTURE HERE ]</p></div>
+        </li>
+        <li><strong>Laundry Staff:</strong> Needs an efficient tool for daily tasks.</li>
+        <li><strong>Customers:</strong> Need accurate receipts and timely service.</li>
+    </ol>
+
+    <h3>C. USER STORIES AND REQUIREMENTS ANALYSIS</h3>
+
+    <h4>1. USER STORIES</h4>
+    <ol type="a">
+        <li>"As a <strong>Staff</strong>, I want to <strong>search for customers</strong> to avoid re-typing details."</li>
+        <li>"As an <strong>Owner</strong>, I want to <strong>view daily income</strong> to track performance."</li>
+        <li>"As a <strong>Staff</strong>, I want <strong>auto-calculation</strong> to prevent pricing mistakes."</li>
+    </ol>
+
+    <h4>2. IDENTIFICATION OF USER REQUIREMENTS</h4>
+    
+    <h5>a) FUNCTIONAL REQUIREMENTS</h5>
+    <ul>
+        <li>System must allow secure login.</li>
+        <li>System must record order details (Weight, Service, Add-ons).</li>
+        <li>System must automatically calculate total price.</li>
+        <li>System must generate sales reports.</li>
+    </ul>
+    <!-- DIAGRAMS FOR FUNCTIONAL REQ -->
+    <div class="figure-box"><p>[ PASTE USE CASE DIAGRAM HERE ]</p><span class="caption">Figure 1: Use Case Diagram</span></div>
+    <div class="figure-box"><p>[ PASTE DFD IMAGE HERE ]</p><span class="caption">Figure 2: Data Flow Diagram</span></div>
+
+    <h5>b) NON-FUNCTIONAL REQUIREMENTS</h5>
+    <ul>
+        <li><strong>Usability:</strong> Simple interface for non-tech users.</li>
+        <li><strong>Reliability:</strong> Data backed up to cloud.</li>
+        <li><strong>Performance:</strong> Fast query response.</li>
+    </ul>
+
+    <h4>3. POSSIBLE SYSTEM REQUIREMENTS</h4>
+
+    <h5>a) HARDWARE REQUIREMENTS</h5>
+    <ul>
+        <li>Desktop/Laptop (Windows/macOS).</li>
+        <li>4GB RAM Minimum.</li>
+        <li>Internet Connection.</li>
+    </ul>
+
+    <h5>b) SOFTWARE REQUIREMENTS</h5>
+    <ul>
+        <li>Frontend: HTML, CSS, JavaScript (Electron).</li>
+        <li>Backend: Node.js.</li>
+        <li>Database: Supabase (PostgreSQL).</li>
+    </ul>
+
+    <h5>c) DATABASE REQUIREMENTS</h5>
+    <p>The database consists of three main tables: <strong>Users</strong>, <strong>Customers</strong> and <strong>Orders</strong>.</p>
+    
+    <!-- ERD MERMAID CODE (UPDATED WITH USER TABLE) -->
+    <div class="mermaid">
+    erDiagram
+        USERS ||--o{ ORDERS : "creates"
+        CUSTOMERS ||--o{ ORDERS : "places"
+        
+        USERS {
+            bigint id PK
+            string username
+            string password
+            string role
+        }
+
+        CUSTOMERS {
+            bigint id PK
+            string name
+            string phone
+            string address
+        }
+        
+        ORDERS {
+            bigint id PK
+            bigint customer_id FK
+            bigint user_id FK "Processed By"
+            string service_type
+            decimal weight_kg
+            json add_ons
+            decimal price
+            string status
+        }
+    </div>
+    <span class="caption">Figure 3: Entity Relationship Diagram (ERD)</span>
+
+    <h5>d) NETWORK AND COMMUNICATION REQUIREMENTS</h5>
+    <p>The system requires HTTPS (Port 443) access to communicate with the Supabase API securely over the internet.</p>
+    
+    <!-- CONTEXT DIAGRAM PLACEHOLDER -->
+    <div class="figure-box"><p>[ PASTE CONTEXT DIAGRAM IMAGE HERE ]</p><span class="caption">Figure 4: Context Diagram</span></div>
+
+    <h5>e) INTEGRATION WITH EXISTING SYSTEMS</h5>
+    <p>Operates as a standalone replacement for manual logbooks. Future integration planned for SMS gateways.</p>
+
+    <!-- IV. PROJECT DEVELOPMENT PLAN (Page 7) -->
+    <h2 id="devplan">IV. PROJECT DEVELOPMENT PLAN</h2>
+
+    <h3>a. Development Methodology</h3>
+    <p>We utilized the <strong>Waterfall Methodology</strong>. The 5 phases (Requirements, Design, Development, Testing, Deployment) were executed sequentially for the entire project.</p>
+    <div class="figure-box"><p>[ PASTE WATERFALL DIAGRAM HERE ]</p><span class="caption">Figure 5: Waterfall Methodology</span></div>
+
+    <h3>b. Timeline and Milestones</h3>
+    <div class="mermaid">
+    gantt
+        title Wash Connect Timeline
+        dateFormat YYYY-MM-DD
+        section Phases
+        Requirements :done, p1, 2025-11-01, 7d
+        System Design :active, p2, after p1, 7d
+        Development : p3, after p2, 14d
+        Testing : p4, after p3, 7d
+        Deployment : p5, after p4, 7d
+    </div>
+    <span class="caption">Figure 6: Project Gantt Chart</span>
+
+    <h3>c. Risk Analysis and Mitigation Strategies</h3>
+    <ol type="1">
+        <li><strong>Data Loss:</strong> <em>Mitigation:</em> Use cloud-based storage (Supabase) which includes automatic backups.</li>
+        <li><strong>Wrong Data Entry:</strong> <em>Mitigation:</em> Mitigated by Input Validation and Auto-calculation.</li>
+        <li><strong>Internet Failure:</strong> <em>Mitigation:</em> Mitigated by hybrid design (future offline caching).</li>
+    </ol>
+
+    <!-- V. CONCLUSION -->
+    <h2 id="conclusion">V. CONCLUSION</h2>
+
+    <h3>a. Summary of Key Points</h3>
+    <p>Wash Connect successfully digitizes laundry operations, solving issues of manual error and data loss through automation and cloud integration.</p>
+
+    <h3>b. Expected Impact and Benefits</h3>
+    <p>The system is expected to increase operational speed by 50%, ensure 100% pricing accuracy, and provide owners with actionable financial insights.</p>
+
+    <br><br>
+    <hr>
+    <h3>REFERENCES</h3>
+    <p>[1] Sommerville, I. (2016). Software Engineering. Pearson.</p>
+    <p>[2] Supabase Documentation. https://supabase.com/docs</p>
+    <p>[3] Electron Framework. https://www.electronjs.org/</p>
+
+</div>
+
+</body>
+</html>

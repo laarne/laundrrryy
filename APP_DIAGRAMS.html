@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wash Connect – System Diagrams (Fixed Version)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7fe;
+            padding: 20px;
+            line-height: 1.6;
+            max-width: 1400px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        h1 { color: #4318ff; margin: 0; font-size: 2.6em; }
+        h2 {
+            background: white;
+            padding: 12px 18px;
+            border-left: 5px solid #4318ff;
+            border-radius: 6px;
+            color: #2b3674;
+            margin-top: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .diagram-description {
+            background: #e7e3ff;
+            border-left: 4px solid #4318ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .mermaid { background: white; }
+        .print-btn {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: #4318ff;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        @media print {
+            .print-btn { display: none; }
+            @page { margin: 1cm; size: A4 landscape; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">📄 Print to PDF</button>
+
+    <div class="header">
+        <h1>Wash Connect</h1>
+        <p><strong>System Diagrams Documentation – Fixed & Improved Version</strong></p>
+    </div>
+
+    <!-- Context Diagram -->
+    <div class="diagram-container">
+        <h2>1. Context Diagram (Level 0)</h2>
+        <div class="diagram-description">Shows high-level interactions between users, system, database, and notification service.</div>
+        <div class="mermaid">
+            graph TB
+                Admin[Admin]
+                Customer[Customer]
+                Supabase[(Supabase Database)]
+                SMS[SMS Gateway]
+                System[Wash Connect System]
+
+                Admin -->|Manage Orders/Customers| System
+                Admin -->|View Reports| System
+                Customer -->|View Receipt / Status| System
+
+                System -->|Store/Retrieve Data| Supabase
+                System -->|Send SMS| SMS
+                SMS -->|Notifications| Customer
+        </div>
+    </div>
+
+    <!-- Use Case Diagram -->
+    <div class="diagram-container">
+        <h2>2. Use Case Diagram</h2>
+        <div class="diagram-description">Lists all system functions users can perform.</div>
+        <div class="mermaid">
+            graph TB
+                Admin((Admin))
+                Customer((Customer))
+
+                subgraph UC[Wash Connect System]
+                    UC1[Login]
+                    UC2[Create Order]
+                    UC3[Edit Order]
+                    UC4[Update Status]
+                    UC5[Mark Payment]
+                    UC6[Manage Customers]
+                    UC7[Analytics Dashboard]
+                    UC8[Generate Reports]
+                    UC9[Configure SMS]
+                    UC10[Send Notifications]
+                    UC11[Generate Digital Receipt]
+                    UC12[View Receipt]
+                end
+
+                Admin --> UC1
+                Admin --> UC2
+                Admin --> UC3
+                Admin --> UC4
+                Admin --> UC5
+                Admin --> UC6
+                Admin --> UC7
+                Admin --> UC8
+                Admin --> UC9
+                Admin --> UC10
+                Admin --> UC11
+
+                Customer --> UC10
+                Customer --> UC12
+        </div>
+    </div>
+
+    <!-- DFD LEVEL 1 -->
+    <div class="diagram-container">
+        <h2>3. Data Flow Diagram – Level 1</h2>
+        <div class="diagram-description">Breakdown of system processes and how data flows between them.</div>
+        <div class="mermaid">
+            graph TB
+                Admin[Admin]
+                Customer[Customer]
+                SMS[SMS Gateway]
+
+                subgraph System[Wash Connect]
+                    P1[1.0 Auth]
+                    P2[2.0 Order Mgmt]
+                    P3[3.0 Customer Mgmt]
+                    P4[4.0 Payment Processing]
+                    P5[5.0 Reports]
+                    P6[6.0 Dashboard]
+                    P7[7.0 Notifications]
+
+                    D1[(Orders)]
+                    D2[(Customers)]
+                    D3[(Users)]
+                end
+
+                Admin -->|Credentials| P1
+                P1 -->|Validate| D3
+
+                Admin -->|Order Details| P2
+                P2 --> D1
+                P2 --> D2
+
+                Admin -->|Customer Data| P3
+                P3 --> D2
+
+                Admin -->|Payment Update| P4
+                P4 --> D1
+
+                Admin -->|Generate Report| P5
+                P5 --> D1
+
+                Admin -->|Dashboard Request| P6
+                P6 --> D1
+
+                P2 -->|Triggers SMS| P7
+                P4 -->|Triggers SMS| P7
+                P7 -->|Send| SMS
+                SMS --> Customer
+        </div>
+    </div>
+
+    <!-- ERD -->
+    <div class="diagram-container">
+        <h2>4. Entity Relationship Diagram (ERD)</h2>
+        <div class="diagram-description">Database entities and relationships.</div>
+        <div class="mermaid">
+            erDiagram
+                USERS ||--o{ ORDERS : creates
+                CUSTOMERS ||--o{ ORDERS : places
+
+                USERS {
+                    bigint id PK
+                    string username
+                    string password
+                    string role
+                }
+
+                CUSTOMERS {
+                    bigint id PK
+                    string name
+                    string phone
+                    string address
+                }
+
+                ORDERS {
+                    bigint id PK
+                    bigint customer_id FK
+                    string service_type
+                    decimal weight_kg
+                    decimal price
+                    text notes
+                    string status
+                    string payment_status
+                    string payment_method
+                }
+        </div>
+    </div>
+
+    <!-- System Architecture -->
+    <div class="diagram-container">
+        <h2>5. System Architecture Diagram</h2>
+        <div class="diagram-description">Shows how the system components interact internally and externally.</div>
+        <div class="mermaid">
+            graph TB
+
+                subgraph UI_LAYER[Presentation Layer]
+                    Electron[Electron Desktop App]
+                    Frontend[HTML/CSS/JavaScript UI]
+                end
+
+                subgraph API_LAYER[Application Layer]
+                    Express[Express.js REST API]
+                    Logic[Business Logic]
+                end
+
+                subgraph DB_LAYER[Database Layer]
+                    Supabase[Supabase Client]
+                    PG[(PostgreSQL Database)]
+                end
+
+                subgraph External[External Services]
+                    SMS[SMS Gateway]
+                    ChartJS[Chart.js]
+                end
+
+                Electron --> Frontend
+                Frontend --> Express
+                Express --> Logic
+                Logic --> Supabase
+                Supabase --> PG
+
+                Logic --> SMS
+                Frontend --> ChartJS
+        </div>
+    </div>
+
+    <!-- Component Interaction Diagram -->
+    <div class="diagram-container">
+        <h2>6. Component Interaction Diagram</h2>
+        <div class="diagram-description">Sequence of actions when creating a new order.</div>
+        <div class="mermaid">
+            sequenceDiagram
+                participant U as User
+                participant UI as Frontend UI
+                participant API as Express API
+                participant BL as Business Logic
+                participant DB as Supabase DB
+
+                U->>UI: Fill Order
+                UI->>API: POST /orders
+                API->>BL: Validate
+                BL->>BL: Calculate Price
+                BL->>DB: Insert Order
+                DB-->>BL: OK
+                BL-->>API: Order Created
+                API-->>UI: Success
+                UI->>API: GET /orders
+                API->>DB: Fetch Orders
+                DB-->>API: Orders Data
+                API-->>UI: Render
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

@@ -2,350 +2,536 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laundry Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Wash Connect System</title>
+    <link rel="icon" type="image/png" href="icon.png">
     <link rel="stylesheet" href="styles.css">
+    
 </head>
 <body>
-    <div class="container">
+
+    <!-- =========================
+         LOGIN SCREEN OVERLAY
+    ========================== -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>System Login</h2>
+            <p>Enter your admin credentials</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="login-user" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-pass" placeholder="Password" required>
+                </div>
+                <button type="submit">Log In</button>
+                <p id="login-error" style="color: red; margin-top: 10px; display: none; font-size: 0.9rem;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- =========================
+         MAIN APPLICATION LAYOUT
+    ========================== -->
+    <div id="app-container" class="hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
         <header>
-            <h1>Wash Connect Laundry Management System</h1>
+            <h1>Wash Connect</h1>
+            <nav>
+                <button id="nav-dashboard" class="nav-btn active">Dashboard</button>
+                <button id="nav-orders" class="nav-btn">Orders List</button>
+                <button id="nav-customers" class="nav-btn">Customers</button>
+                <button id="nav-reports" class="nav-btn">Reports</button>
+            </nav>
         </header>
 
-        <nav>
-            <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-            <button class="nav-btn" data-section="orders">Orders</button>
-            <button class="nav-btn" data-section="customers">Customers</button>
-            <button class="nav-btn" data-section="summary">Sales Summary</button>
-            <button class="nav-btn" data-section="reports">Reports</button>
-            <button class="nav-btn" data-section="notifications">Notifications</button>
-        </nav>
-
-        <section id="dashboard-section" class="section active">
-            <h2>Dashboard - Active Orders</h2>
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <h3>Active Orders</h3>
-                    <p class="stat-value" id="active-orders-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Pending Payment</h3>
-                    <p class="stat-value" id="unpaid-orders-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>In Progress</h3>
-                    <p class="stat-value" id="in-progress-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Ready for Pickup</h3>
-                    <p class="stat-value" id="ready-count">0</p>
-                </div>
-            </div>
-            <div class="table-container">
-                <h3>Active Orders Progress</h3>
-                <table id="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Service</th>
-                            <th>Status</th>
-                            <th>Progress</th>
-                            <th>Payment</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dashboard-tbody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="orders-section" class="section">
-            <h2>Order Management</h2>
+        <!-- MAIN CONTENT AREA -->
+        <main>
             
-            <div class="form-container">
-                <h3>Create New Order</h3>
-                <form id="order-form">
-                    <div class="form-row">
+            <!-- 1. DASHBOARD VIEW -->
+            <div id="dashboard-view" class="view">
+                <h2>Dashboard Overview</h2>
+                
+                <!-- Summary Cards -->
+                <section class="summary-cards">
+                    <div class="card">
+                        <h3>Today's Income</h3>
+                        <p id="summary-income-today">₱0.00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Today's Orders</h3>
+                        <p id="summary-orders-today">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Month Income</h3>
+                        <p id="summary-income-month">₱0.00</p>
+                    </div>
+                </section>
+                
+                <!-- Order Status Overview -->
+                <section class="summary-cards status-cards">
+                     <div class="card status-pending">
+                        <h3>Pending</h3>
+                        <p id="summary-status-pending">0</p>
+                    </div>
+                    <div class="card status-washing">
+                        <h3>Washing</h3>
+                        <p id="summary-status-washing">0</p>
+                    </div>
+                    <div class="card status-ready">
+                        <h3>Ready</h3>
+                        <p id="summary-status-ready">0</p>
+                    </div>
+                    <div class="card status-completed">
+                        <h3>Completed</h3>
+                        <p id="summary-status-completed">0</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 2. ORDERS VIEW -->
+            <div id="orders-view" class="view hidden">
+                <h2>Order Management</h2>
+                
+                <!-- New Order Form -->
+                <div class="form-container">
+                    <h3>New Order</h3>
+                    <form id="create-order-form">
+                        
+                        <!-- SEARCHABLE CUSTOMER -->
                         <div class="form-group">
-                            <label for="customerName">Customer Name *</label>
-                            <input type="text" id="customerName" list="customer-suggestions" required autocomplete="off" placeholder="Start typing name...">
-                            <datalist id="customer-suggestions"></datalist>
+                            <label>Search Customer</label>
+                            <input list="customer-list" id="order-customer-input" placeholder="Type name to search..." required>
+                            <datalist id="customer-list">
+                                <!-- Populated by JavaScript -->
+                            </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Service Type</label>
+                            <select id="order-service" required>
+                                <option value="Wash & Fold">Wash & Fold (Min 6kg)</option>
+                                <option value="Wash & Iron">Wash & Iron (Min 6kg)</option>
+                                <option value="Dry Clean">Dry Clean (Min 6kg)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" id="order-weight" step="0.1" min="6" max="100" placeholder="Minimum 6kg" required>
+                            <small style="color: var(--text-muted); font-size: 0.85rem;">Minimum: 6kg, Maximum: 100kg</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notes (Optional)</label>
+                            <textarea id="order-notes" rows="3" placeholder="Special instructions or notes..."></textarea>
+                        </div>
+
+                        <!-- ADD-ONS SECTION -->
+                        <div class="form-group" style="background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0;">
+                            <label style="margin-bottom: 10px; display: block;">Add-ons (+₱10 each)</label>
+                            <div style="display: flex; gap: 20px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" id="addon-fabcon" value="Fabcon" style="width: auto; margin: 0;">
+                                    <label for="addon-fabcon" style="margin: 0; font-weight: normal;">Fabcon</label>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" id="addon-powder" value="Powder" style="width: auto; margin: 0;">
+                                    <label for="addon-powder" style="margin: 0; font-weight: normal;">Extra Powder</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Create Order</button>
+                    </form>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="form-container" style="margin-bottom: 20px;">
+                    <div class="filters-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Search Orders</label>
+                            <input type="text" id="orders-search" placeholder="Search by customer, ID, or service...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Filter by Status</label>
+                            <select id="orders-filter-status">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="washing">Washing</option>
+                                <option value="ready">Ready</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Filter by Service</label>
+                            <select id="orders-filter-service">
+                                <option value="">All Services</option>
+                                <option value="Wash & Fold">Wash & Fold</option>
+                                <option value="Wash & Iron">Wash & Iron</option>
+                                <option value="Dry Clean">Dry Clean</option>
+                            </select>
+                        </div>
+                        <button type="button" id="clear-filters-btn" class="btn-secondary" style="height: fit-content;">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Orders List Table -->
+                <div class="table-wrapper">
+                    <div class="table-scrollbar">
+                        <div class="table-scrollbar-spacer"></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Service</th>
+                                    <th>Weight</th>
+                                    <th>Add-ons</th>
+                                    <th>Price</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CUSTOMERS VIEW -->
+            <div id="customers-view" class="view hidden">
+                <h2>Customer List</h2>
+                
+                <div class="form-container">
+                    <h3>Add New Customer</h3>
+                    <form id="create-customer-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="cust-name" placeholder="e.g. Juan Dela Cruz" required>
                         </div>
                         <div class="form-group">
-                            <label for="contact">Contact Number *</label>
-                            <input type="text" id="contact" required>
+                            <label>Phone Number</label>
+                            <input type="text" id="cust-phone" placeholder="e.g. 09123456789" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email (Optional)</label>
-                            <input type="email" id="email">
+                            <label>Address</label>
+                            <input type="text" id="cust-address" placeholder="e.g. 123 Main St">
+                        </div>
+                        <button type="submit" class="btn-primary">Save Customer</button>
+                    </form>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-scrollbar">
+                        <div class="table-scrollbar-spacer"></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table id="customers-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. REPORTS VIEW -->
+            <div id="reports-view" class="view hidden">
+                <h2>Reports & Analytics</h2>
+                
+                <!-- Report Type Selector -->
+                <div class="form-container">
+                    <h3>Select Report Type</h3>
+                    <div class="report-selector">
+                        <button type="button" class="report-type-btn active" data-type="weekly">Weekly Report</button>
+                        <button type="button" class="report-type-btn" data-type="monthly">Monthly Report</button>
+                        <button type="button" class="report-type-btn" data-type="custom">Custom Date Range</button>
+                    </div>
+                    
+                    <!-- Custom Date Range Inputs (hidden by default) -->
+                    <div id="custom-date-range" class="form-group" style="display: none; margin-top: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <label>Start Date</label>
+                                <input type="date" id="report-start-date" class="date-input">
+                            </div>
+                            <div>
+                                <label>End Date</label>
+                                <input type="date" id="report-end-date" class="date-input">
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="weight">Weight (kg) * (6kg - 8kg)</label>
-                            <input type="number" id="weight" step="0.1" min="6" max="8" required>
-                            <small style="display: block; margin-top: 5px; color: #666;">Base: 6kg = ₱160, +₱20 per extra kg</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="serviceType">Service Type *</label>
-                            <select id="serviceType" required>
-                                <option value="wash" selected>Wash</option>
-                                <option value="dry">Dry</option>
-                                <option value="fold">Fold</option>
-                                <option value="iron">Iron</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="wash-addons" class="form-group" style="display: none; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 10px; border: 2px solid rgba(102, 126, 234, 0.2);">
-                        <label style="font-weight: 600; color: #667eea; margin-bottom: 15px; display: block;">Additional Services (₱10 each)</label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="fabconQuantity">Fabric Conditioner</label>
-                                <select id="fabconQuantity" style="width: 100%;">
-                                    <option value="0">None</option>
-                                    <option value="1">1 (₱10)</option>
-                                    <option value="2">2 (₱20)</option>
-                                    <option value="3">3 (₱30)</option>
-                                    <option value="4">4 (₱40)</option>
-                                    <option value="5">5 (₱50)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="powderQuantity">Detergent Powder</label>
-                                <select id="powderQuantity" style="width: 100%;">
-                                    <option value="0">None</option>
-                                    <option value="1">1 (₱10)</option>
-                                    <option value="2">2 (₱20)</option>
-                                    <option value="3">3 (₱30)</option>
-                                    <option value="4">4 (₱40)</option>
-                                    <option value="5">5 (₱50)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes">Order Notes</label>
-                        <textarea id="notes" rows="3"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Total Price</label>
-                        <input type="text" id="price-display" readonly style="font-size: 24px; font-weight: bold; color: #667eea; border: none; background: transparent;">
-                    </div>
-
-                    <button type="submit">Create Order</button>
-                    <button type="button" id="cancel-edit" style="display: none;">Cancel Edit</button>
-                </form>
-            </div>
-
-            <div class="table-container">
-                <h3>All Orders</h3>
-                <table id="orders-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Customer</th>
-                            <th>Contact</th>
-                            <th>Weight</th>
-                            <th>Service</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Payment</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-tbody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="customers-section" class="section">
-            <h2>Customer Records</h2>
-            
-            <div id="edit-customer-form-container" class="form-container" style="display: none; background: #e8f0fe; border-color: #667eea;">
-                <h3>Edit Customer Details</h3>
-                <form id="customer-edit-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Name (Read-only)</label>
-                            <input type="text" id="edit-cust-name" readonly style="background: #ddd; cursor: not-allowed;">
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <input type="text" id="edit-cust-contact" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="edit-cust-email">
-                        </div>
-                    </div>
-                    <button type="submit">Save Changes</button>
-                    <button type="button" class="secondary" onclick="cancelEditCustomer()">Cancel</button>
-                </form>
-            </div>
-
-            <div class="table-container" id="customers-main-view">
-                <h3>All Customers</h3>
-                <table id="customers-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Contact</th>
-                            <th>Email</th>
-                            <th>Total Orders</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customers-tbody"></tbody>
-                </table>
-            </div>
-
-            <div id="customer-history" style="display: none;">
-                <h3 id="history-title">Order History</h3>
-                <table id="history-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Weight</th>
-                            <th>Service</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-tbody"></tbody>
-                </table>
-                <button id="back-to-customers" class="secondary" style="margin-top: 15px;">Back to List</button>
-            </div>
-        </section>
-
-        <section id="summary-section" class="section">
-            <h2>Sales Summary</h2>
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <h3>Total Sales Today</h3>
-                    <p class="summary-value" id="total-sales">₱0.00</p>
+                    <button type="button" id="generate-report-btn" class="btn-primary" style="margin-top: 20px;">Generate Report</button>
                 </div>
-                <div class="summary-card">
-                    <h3>Total Orders Today</h3>
-                    <p class="summary-value" id="total-orders">0</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Completed Orders</h3>
-                    <p class="summary-value" id="completed-orders">0</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Paid Orders</h3>
-                    <p class="summary-value" id="paid-orders">0</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Unpaid Orders</h3>
-                    <p class="summary-value" id="unpaid-orders">0</p>
+
+                <!-- Report Results -->
+                <div id="report-results" style="display: none;">
+                    <!-- Summary Cards -->
+                    <section class="summary-cards">
+                        <div class="card">
+                            <h3>Total Sales</h3>
+                            <p id="report-total-sales">₱0.00</p>
+                        </div>
+                        <div class="card">
+                            <h3>Total Orders</h3>
+                            <p id="report-total-orders">0</p>
+                        </div>
+                        <div class="card">
+                            <h3>Date Range</h3>
+                            <p id="report-date-range" style="font-size: 1rem;">-</p>
+                        </div>
+                    </section>
+
+                    <!-- Status Breakdown -->
+                    <section class="summary-cards status-cards" style="margin-top: 25px;">
+                        <div class="card status-pending">
+                            <h3>Pending</h3>
+                            <p id="report-status-pending">0</p>
+                        </div>
+                        <div class="card status-washing">
+                            <h3>Washing</h3>
+                            <p id="report-status-washing">0</p>
+                        </div>
+                        <div class="card status-ready">
+                            <h3>Ready</h3>
+                            <p id="report-status-ready">0</p>
+                        </div>
+                        <div class="card status-completed">
+                            <h3>Completed</h3>
+                            <p id="report-status-completed">0</p>
+                        </div>
+                        <div class="card" style="border-left: 6px solid var(--danger);">
+                            <h3>Cancelled</h3>
+                            <p id="report-status-cancelled">0</p>
+                        </div>
+                    </section>
+
+                    <!-- Chart -->
+                    <div class="form-container" style="margin-top: 30px;">
+                        <h3>Sales Trend</h3>
+                        <div style="position: relative; height: 400px; width: 100%;">
+                            <canvas id="sales-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Export Buttons -->
+                    <div style="margin-top: 30px; display: flex; gap: 10px;">
+                        <button onclick="exportReportToCSV()" class="btn-primary">Export to CSV</button>
+                        <button onclick="printReport()" class="btn-secondary">Print Report</button>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div class="table-wrapper" style="margin-top: 30px;">
+                        <h3 style="margin-bottom: 20px;">Orders in Range</h3>
+                        <div class="table-scrollbar">
+                            <div class="table-scrollbar-spacer"></div>
+                        </div>
+                        <div class="table-scroll">
+                            <table id="reports-orders-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Service</th>
+                                        <th>Weight</th>
+                                        <th>Add-ons</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reports-orders-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section id="reports-section" class="section">
-            <h2>Sales Reports</h2>
-            <div class="form-container">
-                <h3>Generate Report</h3>
-                <form id="report-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="reportStartDate">Start Date</label>
-                            <input type="date" id="reportStartDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="reportEndDate">End Date</label>
-                            <input type="date" id="reportEndDate">
-                        </div>
-                        <div class="form-group">
-                            <label>&nbsp;</label>
-                            <button type="submit">Generate Report</button>
-                            <button type="button" id="export-report">Export to CSV</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div id="report-results" style="display: none;">
-                <div class="summary-cards" id="report-summary"></div>
-                <div class="table-container" style="margin-top: 20px;">
-                    <h3>Report Details</h3>
-                    <table id="report-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Service</th>
-                                <th>Weight</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Payment</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section id="notifications-section" class="section">
-            <h2>Send Customer Notifications</h2>
-            <div class="form-container">
-                <h3>Send Update</h3>
-                <form id="notification-form">
-                    <div class="form-group">
-                        <label for="notificationOrder">Select Order</label>
-                        <select id="notificationOrder" required>
-                            <option value="">Select an order...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="notificationType">Notification Type</label>
-                        <select id="notificationType" required>
-                            <option value="status">Status Update</option>
-                            <option value="payment">Payment Reminder</option>
-                            <option value="ready">Ready for Pickup</option>
-                            <option value="custom">Custom Message</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="notificationMessage">Message</label>
-                        <textarea id="notificationMessage" rows="5" required></textarea>
-                    </div>
-                    <button type="submit">Send Notification</button>
-                    <button type="button" id="preview-notification">Preview Message</button>
-                </form>
-            </div>
-            <div class="table-container" style="margin-top: 20px;">
-                <h3>Recent Notifications</h3>
-                <table id="notifications-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Type</th>
-                            <th>Message</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="notifications-tbody">
-                        <tr><td colspan="6">No notifications sent yet</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        </main>
     </div>
 
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+    
+    <!-- SMS Notification Prototype Modal -->
+    <div id="sms-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send SMS Notification (Prototype)</h3>
+                <button class="modal-close" onclick="closeSmsModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Customer</label>
+                <input type="text" id="sms-customer-name" readonly>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="sms-phone" placeholder="e.g. 09123456789">
+                <small style="color: var(--text-muted); font-size: 0.8rem;">
+                    This is a prototype only. No real SMS will be sent.
+                </small>
+            </div>
+            <div class="form-group">
+                <label>Message Preview</label>
+                <textarea id="sms-message" rows="4"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-primary" onclick="sendSmsPrototype()">Send (Prototype)</button>
+                <button type="button" class="btn-secondary" onclick="closeSmsModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Digital Receipt Prototype Modal -->
+    <div id="receipt-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Digital Receipt (Prototype)</h3>
+                <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+            </div>
+            <div id="receipt-content">
+                <h4 style="margin-bottom: 5px;">Wash Connect Laundry</h4>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Digital Receipt (Prototype Only)</p>
+                <hr style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                    <div>
+                        <p><strong>Customer:</strong> <span id="receipt-customer-name"></span></p>
+                        <p><strong>Phone:</strong> <span id="receipt-customer-phone"></span></p>
+                    </div>
+                    <div>
+                        <p><strong>Order ID:</strong> <span id="receipt-order-id"></span></p>
+                        <p><strong>Date:</strong> <span id="receipt-date"></span></p>
+                    </div>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.9rem;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; border-bottom: 1px solid var(--border); padding: 6px;">Service</th>
+                            <th style="text-align:left; border-bottom: 1px solid var(--border); padding: 6px;">Weight</th>
+                            <th style="text-align:left; border-bottom: 1px solid var(--border); padding: 6px;">Add-ons</th>
+                            <th style="text-align:right; border-bottom: 1px solid var(--border); padding: 6px;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 6px;" id="receipt-service"></td>
+                            <td style="padding: 6px;" id="receipt-weight"></td>
+                            <td style="padding: 6px;" id="receipt-addons"></td>
+                            <td style="padding: 6px; text-align: right;" id="receipt-price"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: right; margin-top: 10px; font-size: 0.95rem;">
+                    <p><strong>Status:</strong> <span id="receipt-status"></span></p>
+                    <p><strong>Payment:</strong> <span id="receipt-payment"></span></p>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">
+                    Note: This is a prototype digital receipt for demonstration only. In a full system, this could be sent via SMS or email and saved as PDF.
+                </p>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-secondary" onclick="window.print()">Print (Browser)</button>
+                <button type="button" class="btn-secondary" onclick="closeReceiptModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Order Modal -->
+    <div id="edit-order-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Order</h3>
+                <button class="modal-close" onclick="closeEditOrderModal()">&times;</button>
+            </div>
+            <form id="edit-order-form">
+                <input type="hidden" id="edit-order-id">
+                <div class="form-group">
+                    <label>Service Type</label>
+                    <select id="edit-order-service" required>
+                        <option value="Wash & Fold">Wash & Fold (Min 6kg)</option>
+                        <option value="Wash & Iron">Wash & Iron (Min 6kg)</option>
+                        <option value="Dry Clean">Dry Clean (Min 6kg)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" id="edit-order-weight" step="0.1" min="6" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Add-ons (+₱10 each)</label>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="edit-addon-fabcon" value="Fabcon">
+                            <label for="edit-addon-fabcon" style="margin: 0; font-weight: normal;">Fabcon</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="edit-addon-powder" value="Powder">
+                            <label for="edit-addon-powder" style="margin: 0; font-weight: normal;">Extra Powder</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="edit-order-notes" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditOrderModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="edit-customer-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Customer</h3>
+                <button class="modal-close" onclick="closeEditCustomerModal()">&times;</button>
+            </div>
+            <form id="edit-customer-form">
+                <input type="hidden" id="edit-customer-id">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="edit-cust-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="edit-cust-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="edit-cust-address">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditCustomerModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Link to your JavaScript logic -->
     <script src="app.js"></script>
 </body>
 </html>

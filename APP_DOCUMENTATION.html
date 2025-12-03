@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wash Connect - Complete Documentation</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            @page { margin: 2cm; }
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #4318FF;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 { color: #4318FF; font-size: 2.5em; margin: 0; }
+        h2 { color: #2B3674; border-bottom: 2px solid #E0E5F2; padding-bottom: 10px; margin-top: 40px; }
+        h3 { color: #4318FF; margin-top: 30px; }
+        code {
+            background: #f4f7fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f4f7fe;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #4318FF;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #E0E5F2;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #4318FF;
+            color: white;
+        }
+        .toc {
+            background: #f4f7fe;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .toc ul { list-style: none; padding-left: 0; }
+        .toc li { margin: 8px 0; }
+        .toc a { color: #4318FF; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .info-box {
+            background: #E0D9FF;
+            border-left: 4px solid #4318FF;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: #FFF4E6;
+            border-left: 4px solid #FFB547;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4318FF;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .print-btn:hover { background: #3311CC; }
+        .flow-diagram {
+            background: white;
+            padding: 20px;
+            border: 2px solid #E0E5F2;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">📄 Print to PDF</button>
+    
+    <div class="header">
+        <h1>Wash Connect</h1>
+        <p><strong>Complete Application Documentation</strong></p>
+        <p>Version 1.0.0 | November 2025</p>
+    </div>
+
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#overview">1. Application Overview</a></li>
+            <li><a href="#architecture">2. System Architecture</a></li>
+            <li><a href="#features">3. Features</a></li>
+            <li><a href="#tech-stack">4. Technology Stack</a></li>
+            <li><a href="#structure">5. Project Structure</a></li>
+            <li><a href="#code-explanation">6. Code Explanation</a></li>
+            <li><a href="#database">7. Database Schema</a></li>
+            <li><a href="#api">8. API Endpoints</a></li>
+            <li><a href="#how-it-works">9. How It Works</a></li>
+            <li><a href="#setup">10. Setup & Installation</a></li>
+            <li><a href="#usage">11. Usage Guide</a></li>
+        </ul>
+    </div>
+
+    <h2 id="overview">1. Application Overview</h2>
+    <p><strong>Wash Connect</strong> is a comprehensive laundry management system designed to help laundry businesses manage orders, customers, payments, and generate reports. The application is built as an Electron desktop app with a modern web-based interface.</p>
+    
+    <h3>Key Capabilities</h3>
+    <ul>
+        <li><strong>Order Management</strong>: Create, edit, and track laundry orders</li>
+        <li><strong>Customer Management</strong>: Add, edit, and manage customer information</li>
+        <li><strong>Payment Tracking</strong>: Mark orders as paid/unpaid with payment methods</li>
+        <li><strong>Analytics Dashboard</strong>: View daily and monthly income statistics</li>
+        <li><strong>Reports</strong>: Generate weekly, monthly, and custom date range reports</li>
+        <li><strong>Mobile Support</strong>: Responsive design works on mobile devices</li>
+    </ul>
+
+    <h2 id="architecture">2. System Architecture</h2>
+    <div class="flow-diagram">
+<pre>
+┌─────────────────────────────────────────────────┐
+│           Electron Desktop Application           │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  ┌──────────────┐      ┌──────────────┐       │
+│  │   Frontend   │◄────►│   Backend    │       │
+│  │  (HTML/CSS/  │      │  (Express.js) │       │
+│  │   JavaScript)│      │              │       │
+│  └──────────────┘      └──────┬───────┘       │
+│                                │                │
+│                                ▼                │
+│                         ┌──────────────┐       │
+│                         │   Supabase   │       │
+│                         │   Database   │       │
+│                         └──────────────┘       │
+└─────────────────────────────────────────────────┘
+</pre>
+    </div>
+
+    <h3>Components</h3>
+    <ol>
+        <li><strong>Frontend</strong> (<code>frontend/</code>): HTML structure, CSS styling, JavaScript for interactivity, Chart.js for visualizations</li>
+        <li><strong>Backend</strong> (<code>backend/server.js</code>): Express.js REST API, Supabase integration, business logic, data validation</li>
+        <li><strong>Database</strong> (Supabase): PostgreSQL database with tables for orders, customers, users</li>
+        <li><strong>Electron</strong> (<code>main.js</code>): Desktop app wrapper that auto-starts backend server</li>
+    </ol>
+
+    <h2 id="features">3. Features</h2>
+    
+    <h3>3.1 Dashboard</h3>
+    <ul>
+        <li><strong>Today's Income</strong>: Total revenue for current day</li>
+        <li><strong>Today's Orders</strong>: Number of orders created today</li>
+        <li><strong>Month Income</strong>: Total revenue for current month</li>
+        <li><strong>Status Overview</strong>: Count of orders by status (Pending, Washing, Ready, Completed, Cancelled)</li>
+    </ul>
+
+    <h3>3.2 Order Management</h3>
+    <ul>
+        <li><strong>Create Orders</strong>: Select customer, service type, weight, add notes, select add-ons. Automatic price calculation.</li>
+        <li><strong>View Orders</strong>: Table view with search and filter functionality</li>
+        <li><strong>Edit Orders</strong>: Modify service type, weight, add-ons, notes with automatic price recalculation</li>
+        <li><strong>Update Status</strong>: Change order status through workflow</li>
+        <li><strong>Payment Tracking</strong>: Mark orders as paid/unpaid, track payment method and date</li>
+    </ul>
+
+    <h3>3.3 Customer Management</h3>
+    <ul>
+        <li>Add, edit, and delete customers</li>
+        <li>Search functionality when creating orders</li>
+    </ul>
+
+    <h3>3.4 Reports & Analytics</h3>
+    <ul>
+        <li>Weekly, Monthly, and Custom date range reports</li>
+        <li>Total sales summary, order count, status breakdown</li>
+        <li>Daily sales chart visualization</li>
+        <li>Export to CSV and print functionality</li>
+    </ul>
+
+    <h2 id="tech-stack">4. Technology Stack</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Technology</th>
+            <th>Version</th>
+        </tr>
+        <tr>
+            <td>Frontend</td>
+            <td>HTML5, CSS3, JavaScript (ES6+)</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>Charts</td>
+            <td>Chart.js</td>
+            <td>4.4.0</td>
+        </tr>
+        <tr>
+            <td>Backend</td>
+            <td>Node.js, Express.js</td>
+            <td>4.19.2</td>
+        </tr>
+        <tr>
+            <td>Database</td>
+            <td>Supabase (PostgreSQL)</td>
+            <td>2.43.4</td>
+        </tr>
+        <tr>
+            <td>Validation</td>
+            <td>express-validator</td>
+            <td>7.0.1</td>
+        </tr>
+        <tr>
+            <td>Desktop</td>
+            <td>Electron</td>
+            <td>30.0.0</td>
+        </tr>
+    </table>
+
+    <h2 id="structure">5. Project Structure</h2>
+    <pre><code>laundry-app/
+├── backend/
+│   └── server.js          # Main Express server
+├── frontend/
+│   ├── index.html         # Main HTML file
+│   ├── app.js             # Frontend JavaScript
+│   ├── styles.css         # All styling
+│   └── icon.png           # App icon
+├── main.js                # Electron entry point
+├── package.json           # Dependencies and scripts
+├── .env                   # Environment variables
+└── .env.example           # Environment template</code></pre>
+
+    <h2 id="code-explanation">6. Code Explanation</h2>
+    
+    <h3>6.1 Backend Server Configuration</h3>
+    <pre><code>require('dotenv').config();
+const express = require('express');
+const { createClient } = require('@supabase/supabase-js');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Supabase connection
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);</code></pre>
+    <p><strong>Explanation</strong>: Loads environment variables, creates Express app, and connects to Supabase database.</p>
+
+    <h3>6.2 Price Calculation Logic</h3>
+    <pre><code>const PRICING = {
+    'Wash & Fold': 160,  // Base price for first 6kg
+    'Wash & Iron': 200,  // Base price for first 6kg
+    'Dry Clean': 250     // Base price for first 6kg
+};
+
+const EXCESS_RATE = 20;  // 20 Pesos per additional kg
+const MIN_WEIGHT = 6;    // Minimum kilos
+const ADDON_PRICE = 10;  // Price per add-on
+
+// Calculation example:
+// Base Price: ₱160
+// Excess Weight: (8 - 6) × ₱20 = ₱40
+// Add-ons: 2 × ₱10 = ₱20
+// Total: ₱220</code></pre>
+
+    <h3>6.3 Order Creation Endpoint</h3>
+    <pre><code>app.post('/api/orders', [
+    body('customer_id').notEmpty(),
+    body('service_type').isIn(['Wash & Fold', 'Wash & Iron', 'Dry Clean']),
+    body('weight_kg').isFloat({ min: MIN_WEIGHT, max: 100 }),
+    body('add_ons').optional().isArray()
+], validate, async (req, res) => {
+    // 1. Validate input
+    // 2. Calculate price (base + excess + add-ons)
+    // 3. Insert into database
+    // 4. Return created order
+});</code></pre>
+
+    <h3>6.4 Frontend Order Loading</h3>
+    <pre><code>async function loadOrders() {
+    const res = await fetch(`${API_URL}/orders`);
+    const orders = await res.json();
+    allOrders = orders; // Store for filtering
+    displayOrders(orders);
+}
+
+function displayOrders(orders) {
+    orders.forEach(order => {
+        // Create table row with order data
+        // Add action buttons (Edit, Mark Paid, Status dropdown)
+    });
+}</code></pre>
+
+    <h3>6.5 Chart Rendering</h3>
+    <pre><code>function updateChart(chartData) {
+    const ctx = document.getElementById('sales-chart').getContext('2d');
+    
+    salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: formattedLabels,
+            datasets: [{
+                label: 'Daily Sales (₱)',
+                data: chartData.values,
+                borderColor: '#4318FF'
+            }]
+        }
+    });
+}</code></pre>
+
+    <h2 id="database">7. Database Schema</h2>
+    
+    <h3>Orders Table</h3>
+    <pre><code>CREATE TABLE orders (
+    id BIGSERIAL PRIMARY KEY,
+    customer_id BIGINT REFERENCES customers(id),
+    service_type TEXT NOT NULL,
+    weight_kg DECIMAL(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    notes TEXT,
+    add_ons TEXT[],
+    status TEXT DEFAULT 'pending',
+    payment_status TEXT DEFAULT 'unpaid',
+    payment_method TEXT,
+    payment_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);</code></pre>
+
+    <h3>Customers Table</h3>
+    <pre><code>CREATE TABLE customers (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    phone TEXT,
+    address TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);</code></pre>
+
+    <h2 id="api">8. API Endpoints</h2>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td><code>/api/login</code></td>
+            <td>Authenticate user</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td><code>/api/customers</code></td>
+            <td>Get all customers</td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td><code>/api/customers</code></td>
+            <td>Create customer</td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td><code>/api/customers/:id</code></td>
+            <td>Update customer</td>
+        </tr>
+        <tr>
+            <td>DELETE</td>
+            <td><code>/api/customers/:id</code></td>
+            <td>Delete customer</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td><code>/api/orders</code></td>
+            <td>Get all orders</td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td><code>/api/orders</code></td>
+            <td>Create order (auto-calculates price)</td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td><code>/api/orders/:id</code></td>
+            <td>Update order</td>
+        </tr>
+        <tr>
+            <td>PATCH</td>
+            <td><code>/api/orders/:id/status</code></td>
+            <td>Update order status</td>
+        </tr>
+        <tr>
+            <td>PATCH</td>
+            <td><code>/api/orders/:id/payment</code></td>
+            <td>Update payment status</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td><code>/api/analytics/summary</code></td>
+            <td>Get dashboard statistics</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td><code>/api/reports</code></td>
+            <td>Generate report (weekly/monthly/custom)</td>
+        </tr>
+    </table>
+
+    <h2 id="how-it-works">9. How It Works</h2>
+    
+    <h3>Order Creation Flow</h3>
+    <div class="flow-diagram">
+        <ol>
+            <li>User fills out order form</li>
+            <li>Frontend validates input (weight >= 6kg)</li>
+            <li>Frontend sends POST request to /api/orders</li>
+            <li>Backend validates data</li>
+            <li>Backend calculates price (base + excess + add-ons)</li>
+            <li>Backend inserts order into Supabase</li>
+            <li>Backend returns created order</li>
+            <li>Frontend shows success toast</li>
+            <li>Frontend refreshes orders list</li>
+            <li>Frontend updates dashboard</li>
+        </ol>
+    </div>
+
+    <h3>Price Calculation Example</h3>
+    <div class="info-box">
+        <strong>Order Details:</strong><br>
+        Service: Wash & Fold (₱160 base)<br>
+        Weight: 8 kg<br>
+        Add-ons: Fabcon, Powder (2 items)<br><br>
+        <strong>Calculation:</strong><br>
+        Base Price: ₱160.00<br>
+        Excess Weight: (8 - 6) × ₱20 = ₱40.00<br>
+        Add-ons: 2 × ₱10 = ₱20.00<br>
+        <strong>Total: ₱220.00</strong>
+    </div>
+
+    <h2 id="setup">10. Setup & Installation</h2>
+    
+    <h3>Step 1: Install Dependencies</h3>
+    <pre><code>npm install</code></pre>
+
+    <h3>Step 2: Configure Environment</h3>
+    <p>Create <code>.env</code> file:</p>
+    <pre><code>SUPABASE_URL=your_supabase_url_here
+SUPABASE_KEY=your_supabase_key_here
+PORT=3000
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=password123</code></pre>
+
+    <h3>Step 3: Set Up Database</h3>
+    <p>Create tables in Supabase (see Database Schema section)</p>
+
+    <h3>Step 4: Run Application</h3>
+    <pre><code>npm start</code></pre>
+
+    <h2 id="usage">11. Usage Guide</h2>
+    
+    <h3>Creating an Order</h3>
+    <ol>
+        <li>Navigate to "Orders List" tab</li>
+        <li>Fill out form: customer, service, weight, notes, add-ons</li>
+        <li>Click "Create Order"</li>
+        <li>Order appears with calculated price</li>
+    </ol>
+
+    <h3>Managing Orders</h3>
+    <ul>
+        <li><strong>Update Status</strong>: Use dropdown in Actions column</li>
+        <li><strong>Mark as Paid</strong>: Click "Mark Paid" button</li>
+        <li><strong>Edit Order</strong>: Click "Edit" button, modify, save</li>
+    </ul>
+
+    <h3>Viewing Reports</h3>
+    <ol>
+        <li>Navigate to "Reports" tab</li>
+        <li>Select report type (Weekly/Monthly/Custom)</li>
+        <li>Click "Generate Report"</li>
+        <li>View statistics, chart, and orders list</li>
+        <li>Export to CSV or print if needed</li>
+    </ol>
+
+    <div class="warning-box">
+        <strong>Note:</strong> To print this document as PDF, click the "Print to PDF" button at the top right, or use your browser's Print function (Ctrl+P) and select "Save as PDF" as the destination.
+    </div>
+
+    <hr style="margin: 40px 0; border: none; border-top: 2px solid #E0E5F2;">
+    <p style="text-align: center; color: #707EAE;">
+        <strong>Wash Connect Documentation</strong><br>
+        Version 1.0.0 | November 2025<br>
+        Generated for: John Michael
+    </p>
+</body>
+</html>
+
+
+
+
